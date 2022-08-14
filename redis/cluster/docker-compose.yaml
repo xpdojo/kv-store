@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+
+  redis-master-1:
+    image: redis:5.0.14-alpine3.16
+    container_name: redis-master-1
+    command: redis-server /etc/redis.conf
+    volumes:
+      - ./redis1.conf:/etc/redis.conf
+    networks:
+      redis-net:
+        ipv4_address: 172.30.0.31
+    ports:
+      - 7001:7001
+
+  redis-master-2:
+    image: redis:5.0.14-alpine3.16
+    container_name: redis-master-2
+    command: redis-server /etc/redis.conf
+    volumes:
+      - ./redis2.conf:/etc/redis.conf
+    networks:
+      redis-net:
+        ipv4_address: 172.30.0.32
+    ports:
+      - 7002:7002
+
+  redis-master-3:
+    image: redis:5.0.14-alpine3.16
+    container_name: redis-master-3
+    command: redis-server /etc/redis.conf
+    volumes:
+      - ./redis3.conf:/etc/redis.conf
+    networks:
+      redis-net:
+        ipv4_address: 172.30.0.33
+    ports:
+      - 7003:7003
+
+networks:
+  redis-net:
+    name: redis-net
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/24
