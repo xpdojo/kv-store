@@ -1,2 +1,1 @@
-# kv-store
-Key-Value Store
+# Key-Value Store
