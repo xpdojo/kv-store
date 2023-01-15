@@ -7,17 +7,29 @@ sudo docker-compose up -d
 ```
 
 ```sh
-> docker exec -it redis-node-1 redis-cli info
-
-Could not connect to Redis at 127.0.0.1:6379: Connection refused
+docker exec -it redis-node-1 redis-cli -p 7001 info
 ```
 
 ## 마스터(Master) 노드 클러스터 생성
 
 ```sh
-> docker exec -it redis-node-1 sh
-> redis-cli --cluster create 172.30.0.31:7001 172.30.0.32:7002 172.30.0.33:7003
+# docker exec -it redis-node-1 sh
+# redis-cli --cluster create 172.30.0.31:7001 172.30.0.32:7002 172.30.0.33:7003
+# docker exec -it redis-node-1 redis-cli --cluster create 172.30.0.31:7001 172.30.0.32:7002 172.30.0.33:7003
+```
 
+```sh
+# add slave
+docker exec -it redis-node-2 redis-cli -p 7002 --cluster add-node 172.30.0.32:7002 172.30.0.31:7001 --cluster-slave
+
+# list slots
+docker exec -it redis-node-1 redis-cli -p 7001 cluster slots
+
+# add slots
+docker exec -it redis-node-1 redis-cli -p 7001 cluster addslots 10000
+```
+
+```sh
 >>> Performing hash slots allocation on 3 nodes...
 Master[0] -> Slots 0 - 5460
 Master[1] -> Slots 5461 - 10922
@@ -52,7 +64,10 @@ M: 18bebaa483fc328ea81881dbabf52ac55debea43 172.30.0.32:7002
 먼저 해당 노드를 확인한다.
 
 ```sh
-> redis-cli -c -p 7001 info replication
+redis-cli -c -p 7001 info replication
+```
+
+```sh
 # Replication
 role:master
 connected_slaves:0
@@ -69,7 +84,10 @@ repl_backlog_histlen:0
 클러스터로 묶인 노드를 확인한다.
 
 ```sh
-> redis-cli -c -p 7001 cluster nodes
+redis-cli -c -p 7001 cluster nodes
+```
+
+```sh
 575aad00055615c2661370492e89d7c34e50a19d 172.30.0.33:7003@17003 master - 0 1660484607489 3 connected 10923-16383
 18bebaa483fc328ea81881dbabf52ac55debea43 172.30.0.32:7002@17002 master - 0 1660484607489 2 connected 5461-10922
 ee9a897e03f1f641f0317c2e8fd09e488537d4e3 172.30.0.31:7001@17001 myself,master - 0 1660484607000 1 connected 0-5460
@@ -78,7 +96,10 @@ ee9a897e03f1f641f0317c2e8fd09e488537d4e3 172.30.0.31:7001@17001 myself,master - 
 전체 클러스터 정보를 확인한다.
 
 ```sh
-> redis-cli -c -p 7001 cluster info
+redis-cli -c -p 7001 cluster info
+```
+
+```sh
 cluster_state:ok
 cluster_slots_assigned:16384
 cluster_slots_ok:16384

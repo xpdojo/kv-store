@@ -2,9 +2,9 @@ version: "3.8"
 
 services:
 
-  redis-master-1:
+  redis-node-1:
     image: redis:5.0.14-alpine3.16
-    container_name: redis-master-1
+    container_name: redis-node-1
     command: redis-server /etc/redis.conf
     volumes:
       - ./redis1.conf:/etc/redis.conf
@@ -14,9 +14,9 @@ services:
     ports:
       - 7001:7001
 
-  redis-master-2:
+  redis-node-2:
     image: redis:5.0.14-alpine3.16
-    container_name: redis-master-2
+    container_name: redis-node-2
     command: redis-server /etc/redis.conf
     volumes:
       - ./redis2.conf:/etc/redis.conf
@@ -26,9 +26,9 @@ services:
     ports:
       - 7002:7002
 
-  redis-master-3:
+  redis-node-3:
     image: redis:5.0.14-alpine3.16
-    container_name: redis-master-3
+    container_name: redis-node-3
     command: redis-server /etc/redis.conf
     volumes:
       - ./redis3.conf:/etc/redis.conf
